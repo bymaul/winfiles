@@ -8,6 +8,7 @@ on:
       - "starship/**"
       - "bat/**"
       - "lazygit/**"
+      - "fastfetch/**"
       - "wsl/zsh/**"
       - "wsl/tmux/**"
       - "wsl/opencode/**"
@@ -66,6 +67,7 @@ jobs:
           copy_dir starship starship
           copy_dir bat bat
           copy_dir lazygit lazygit
+          copy_dir fastfetch fastfetch
           copy_dir wsl/opencode opencode
           copy_dir wsl/zsh zsh
           copy_dir wsl/tmux tmux

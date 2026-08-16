@@ -9,7 +9,7 @@ Windows and WSL dotfiles. Shared configs sync with
 ```
 nvim/ starship/ bat/ lazygit/ opencode/   # cross-platform (root)
 wsl/zsh/ wsl/tmux/                         # WSL-only
-windows/                                   # native Windows (PowerShell, Windows Terminal, setup.ps1)
+windows/                                   # native Windows (PowerShell, Windows Terminal)
 ```
 
 ## Windows
@@ -19,10 +19,10 @@ Fresh machine, elevated PowerShell:
 ```powershell
 git clone https://github.com/bymaul/winfiles $HOME\winfiles
 Set-Location $HOME\winfiles
-.\windows\setup.ps1    # links configs, installs apps (choco + winget) + modules
+.\install.ps1    # links configs, installs the coding toolchain (choco + winget)
 ```
 
-After a pull, just re-run `.\windows\setup.ps1` to re-link and update.
+After a pull, just re-run `.\install.ps1` to re-link and update.
 
 ## WSL
 

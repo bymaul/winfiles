@@ -1,6 +1,10 @@
-# install.ps1 - link winfiles configs on native Windows via directory junctions.
-# No admin needed (junctions, not symlinks). Idempotent: safe to re-run after
-# every git pull.
+# install.ps1 - bootstrap a fresh Windows machine from winfiles.
+# Links configs (directory junctions), then installs the coding toolchain
+# (choco + winget) and the PowerShell modules the profile needs. Idempotent:
+# safe to re-run after every git pull.
+#
+# Run once, from an elevated (admin) PowerShell:
+#   powershell -ExecutionPolicy RemoteSigned -File .\install.ps1
 
 $ErrorActionPreference = 'Stop'
 
@@ -40,7 +44,7 @@ function New-ConfigJunction {
     Write-Host "linked $Link -> $resolved"
 }
 
-Write-Host "linking shared packages (from $Repo)"
+Write-Host "linking configs (from $Repo)"
 
 $junctions = @(
     @{ Link = "$env:LOCALAPPDATA\nvim";                Target = 'nvim' },
@@ -69,7 +73,76 @@ foreach ($wt in $wtLocalStates) {
     }
 }
 
-Write-Host ""
-Write-Host "done. notes:"
-Write-Host "  - Windows Terminal writes state files into the repo dir; they are gitignored."
-Write-Host "  - restart Windows Terminal and any open PowerShell to pick up the new config."
+# 1. chocolatey + coding packages
+$env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
+
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    Write-Host 'installing chocolatey'
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+    $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
+}
+
+$chocoPackages = @(
+    'bat'
+    'fd'
+    'fnm'
+    'fzf'
+    'lazygit'
+    'less'
+    'mingw'
+    'nerd-fonts-JetBrainsMono'
+    'pnpm'
+    'ripgrep'
+    'SQLite'
+    'vcredist140'
+    'zig'
+    'zoxide'
+)
+
+foreach ($pkg in $chocoPackages) {
+    choco install $pkg -y --no-progress --limit-output
+}
+
+# 2. winget packages (coding tools)
+$wingetPackages = @(
+    'Microsoft.PowerShell'
+    'Microsoft.WindowsTerminal'
+    'Microsoft.PowerToys'
+    'Microsoft.WSL'
+    'Microsoft.VisualStudioCode'
+    'Git.Git'
+    'GitHub.cli'
+    'Neovim.Neovim'
+    'Starship.Starship'
+    'eza-community.eza'
+    'Fastfetch-cli.Fastfetch'
+    'Docker.DockerDesktop'
+    'TablePlus.TablePlus'
+    'Bruno.Bruno'
+    'BeyondCode.Herd'
+    'GoLang.Go'
+    'AutoHotkey.AutoHotkey'
+)
+
+foreach ($pkg in $wingetPackages) {
+    winget install --id $pkg --exact --silent --accept-package-agreements --accept-source-agreements
+}
+
+# 3. PowerShell modules used by the profile
+$profileModules = @('syntax-highlighting', 'ps-color-scripts')
+
+foreach ($m in $profileModules) {
+    try {
+        Install-PSResource -Name $m -Scope CurrentUser -Quiet -TrustRepository -ErrorAction Stop
+    } catch {
+        Install-Module -Name $m -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+    }
+}
+
+Write-Host ''
+Write-Host 'done. notes:'
+Write-Host '  - WSL needs a distro: install ArchWSL from the Microsoft Store (or manually).'
+Write-Host '  - then run the WSL side: git clone https://github.com/bymaul/winfiles ~/winfiles && ~/winfiles/install-wsl.sh'
+Write-Host '  - Windows Terminal writes state files into the repo dir; they are gitignored.'
+Write-Host '  - restart PowerShell and Windows Terminal to pick up the new config.'

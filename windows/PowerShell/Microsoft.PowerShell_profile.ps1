@@ -207,5 +207,9 @@ Invoke-Expression (& { (zoxide init powershell | Out-String) })
 
 fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 
-Import-Module -Name Microsoft.WinGet.CommandNotFound
-Import-Module syntax-highlighting
+if (Get-Module -ListAvailable Microsoft.WinGet.CommandNotFound) {
+    Import-Module -Name Microsoft.WinGet.CommandNotFound
+}
+if (Get-Module -ListAvailable syntax-highlighting) {
+    Import-Module syntax-highlighting
+}

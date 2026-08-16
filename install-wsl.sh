@@ -50,6 +50,8 @@ backup_conflicts() {
 
 log "installing winfiles into $HOME (from $REPO)"
 
+export PATH="$HOME/.local/bin:$PATH"
+
 if command -v stow >/dev/null 2>&1; then
     log "using GNU Stow"
     stow_pkg() {
@@ -83,6 +85,21 @@ fi
 # register vendored bat theme
 if command -v bat >/dev/null 2>&1; then
     bat cache --build >/dev/null 2>&1 && log "rebuilt bat cache"
+fi
+
+# install opencode if missing (binary at ~/.opencode/bin, linked into ~/.local/bin
+# so it resolves via the shared zsh PATH - keeps the shared config free of
+# machine-specific entries)
+if ! command -v opencode >/dev/null 2>&1; then
+    if [ ! -x "$HOME/.opencode/bin/opencode" ]; then
+        log "opencode missing - installing"
+        curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path
+    else
+        log "opencode binary present at ~/.opencode/bin (off-PATH)"
+    fi
+    mkdir -p "$HOME/.local/bin"
+    ln -sfn "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
+    log "linked ~/.local/bin/opencode -> ~/.opencode/bin/opencode"
 fi
 
 # requirements check (warn-only; full list in README)

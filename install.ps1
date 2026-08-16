@@ -3,8 +3,11 @@
 # (choco + winget) and the PowerShell modules the profile needs. Idempotent:
 # safe to re-run after every git pull.
 #
-# Run once, from an elevated (admin) PowerShell:
-#   powershell -ExecutionPolicy RemoteSigned -File .\install.ps1
+# Run once, from an elevated PowerShell 7:
+#   pwsh -ExecutionPolicy RemoteSigned -File .\install.ps1
+
+#Requires -RunAsAdministrator
+#Requires -Version 7
 
 $ErrorActionPreference = 'Stop'
 
@@ -73,7 +76,7 @@ foreach ($wt in $wtLocalStates) {
     }
 }
 
-# 1. chocolatey + coding packages
+# 1. chocolatey
 $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
 
 if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
@@ -104,7 +107,7 @@ foreach ($pkg in $chocoPackages) {
     choco install $pkg -y --no-progress --limit-output
 }
 
-# 2. winget packages (coding tools)
+# 2. winget packages
 $wingetPackages = @(
     'Microsoft.PowerShell'
     'Microsoft.WindowsTerminal'

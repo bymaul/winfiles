@@ -1,6 +1,5 @@
 # install.ps1 - bootstrap a fresh Windows machine from winfiles.
-# Links configs (junctions for dirs, symlinks for files), then installs the
-# coding toolchain (choco + winget) and the PowerShell modules the profile
+# Links configs (junctions for dirs, symlinks for files), then installs the # coding toolchain (choco + winget) and the PowerShell modules the profile
 # needs. Idempotent: safe to re-run after every git pull.
 #
 # Run once, from an elevated PowerShell 7:
@@ -104,8 +103,11 @@ $chocoPackages = @(
     'zig'
 )
 
-foreach ($pkg in $chocoPackages) {
-    choco upgrade $pkg -y --no-progress --limit-output
+$installedChocoPackages = (choco list --limit-output --id-only).Split("`n")
+foreach ($chocoPackage in $chocoPackages) {
+    if ($installedChocoPackages -notcontains $chocoPackage) {
+        choco install $chocoPackage -y
+    }
 }
 
 # register the vendored bat theme (bat reads its cache, not themes/ on disk)
@@ -131,8 +133,11 @@ $wingetPackages = @(
     'GoLang.Go'
 )
 
-foreach ($pkg in $wingetPackages) {
-    winget install --id $pkg --exact --silent --accept-package-agreements --accept-source-agreements
+$installedWingetPackages = winget list | Out-String
+foreach ($wingetPackage in $wingetPackages) {
+    if ($installedWingetPackages -notmatch $wingetPackage) {
+        winget install --id $wingetPackage --exact --silent --accept-package-agreements --accept-source-agreements
+    }
 }
 
 # 3. WSL + Arch distro (skipped if WSL already present with Arch)

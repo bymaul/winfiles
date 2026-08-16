@@ -89,17 +89,20 @@ fi
 
 # install opencode if missing (binary at ~/.opencode/bin, linked into ~/.local/bin
 # so it resolves via the shared zsh PATH - keeps the shared config free of
-# machine-specific entries)
-if ! command -v opencode >/dev/null 2>&1; then
-    if [ ! -x "$HOME/.opencode/bin/opencode" ]; then
-        log "opencode missing - installing"
-        curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path
-    else
-        log "opencode binary present at ~/.opencode/bin (off-PATH)"
-    fi
+# machine-specific entries). Always (re)create the symlink when the binary exists,
+# so the link survives a shell switch even if opencode is currently on PATH.
+if [ -x "$HOME/.opencode/bin/opencode" ]; then
     mkdir -p "$HOME/.local/bin"
     ln -sfn "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
     log "linked ~/.local/bin/opencode -> ~/.opencode/bin/opencode"
+elif ! command -v opencode >/dev/null 2>&1; then
+    log "opencode missing - installing"
+    curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path
+    mkdir -p "$HOME/.local/bin"
+    ln -sfn "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
+    log "linked ~/.local/bin/opencode -> ~/.opencode/bin/opencode"
+else
+    log "opencode already on PATH (skipping)"
 fi
 
 # requirements check (warn-only; full list in README)

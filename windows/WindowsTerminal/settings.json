@@ -1,0 +1,142 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": 
+    [
+        {
+            "command": 
+            {
+                "action": "copy",
+                "singleLine": false
+            },
+            "id": "User.copy.644BA8F2"
+        },
+        {
+            "command": "paste",
+            "id": "User.paste"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "auto",
+                "splitMode": "duplicate"
+            },
+            "id": "User.splitPane.A6751878"
+        },
+        {
+            "command": "find",
+            "id": "User.find"
+        }
+    ],
+    "alwaysShowTabs": true,
+    "centerOnLaunch": true,
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+    "initialCols": 150,
+    "initialPosition": ",",
+    "initialRows": 40,
+    "keybindings": 
+    [
+        {
+            "id": "User.copy.644BA8F2",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "User.paste",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "User.find",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "User.splitPane.A6751878",
+            "keys": "alt+shift+d"
+        }
+    ],
+    "launchMode": "focus",
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults": 
+        {
+            "colorScheme": "Vague",
+            "cursorShape": "filledBox",
+            "font": 
+            {
+                "face": "JetBrainsMono Nerd Font",
+                "size": 11
+            },
+            "opacity": 90,
+            "padding": "10",
+            "scrollbarState": "hidden",
+            "useAcrylic": true
+        },
+        "list": 
+        [
+            {
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "hidden": false,
+                "name": "PowerShell",
+                "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
+                "hidden": false,
+                "name": "Git Bash",
+                "source": "Git"
+            },
+            {
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": true,
+                "name": "Windows PowerShell"
+            },
+            {
+                "guid": "{a5a97cb8-8961-5535-816d-772efe0c6a3f}",
+                "hidden": false,
+                "name": "Arch",
+                "source": "Windows.Terminal.Wsl"
+            }
+        ]
+    },
+    "schemes": 
+    [
+        {
+            "background": "#141415",
+            "black": "#171718",
+            "blue": "#7e98e8",
+            "brightBlack": "#606079",
+            "brightBlue": "#90a0b5",
+            "brightCyan": "#9bb4bc",
+            "brightGreen": "#a6d189",
+            "brightPurple": "#aeaed1",
+            "brightRed": "#d8647e",
+            "brightWhite": "#cdcdcd",
+            "brightYellow": "#e0a363",
+            "cursorColor": "#c3c3d5",
+            "cyan": "#9bb4bc",
+            "foreground": "#cdcdcd",
+            "green": "#a6d189",
+            "name": "Vague",
+            "purple": "#bb9dbd",
+            "red": "#ea999c",
+            "selectionBackground": "#252530",
+            "white": "#cdcdcd",
+            "yellow": "#f3be7c"
+        }
+    ],
+    "themes": []
+}

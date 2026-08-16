@@ -1,0 +1,14 @@
+# editor
+*~
+*.swp
+*.tmp
+
+# package managers
+node_modules/
+package.json
+package-lock.json
+bun.lock
+
+# Windows Terminal writes these into the junctioned repo dir
+windows/WindowsTerminal/state.json
+windows/WindowsTerminal/settings-history.json

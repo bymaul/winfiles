@@ -12,9 +12,9 @@ Set-Alias -Name gad -Value Export-GitDiffArchive
 Set-Alias -Name art -Value Invoke-LaravelArtisan
 Set-Alias -Name us -Value Update-SystemSoftware
 Set-Alias -Name lg -Value lazygit
-Set-Alias -Name tif -Value Show-ThisIsFine
 Set-Alias -Name rmrf -Value Remove-ItemForceRecursive
 Set-Alias -Name opencode -Value Invoke-OpenCodeWSL
+Set-Alias -Name su -Value Update-ShellElevation
 Set-Alias -Name oc -Value opencode
 
 # Functions
@@ -27,6 +27,10 @@ function Get-ChildItemFormatted
 	)
 
 	eza -a -l --header --icons --hyperlink --time-style relative $Path
+}
+
+function Update-ShellElevation {
+    sudo -E pwsh -NoLogo -Interactive -NoExit -c "Clear-Host"
 }
 
 function Find-String
@@ -141,12 +145,6 @@ function Update-SystemSoftware
 	# upgrade all packages installed without superuser
 	winget upgrade --all --include-unknown --silent --verbose
 	sudo choco upgrade all -y
-}
-
-function Show-ThisIsFine
-{
-	Write-Verbose "Running thisisfine.ps1"
-	Show-ColorScript -Name thisisfine
 }
 
 function Get-CommandDefinition

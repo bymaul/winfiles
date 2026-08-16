@@ -157,7 +157,7 @@ if (Get-Command wsl -ErrorAction SilentlyContinue) {
 }
 
 # 4. PowerShell modules used by the profile
-$profileModules = @('syntax-highlighting', 'ps-color-scripts')
+$profileModules = @('syntax-highlighting')
 
 foreach ($m in $profileModules) {
     try {

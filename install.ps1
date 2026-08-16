@@ -117,19 +117,35 @@ $wingetPackages = @(
     'Starship.Starship'
     'eza-community.eza'
     'Fastfetch-cli.Fastfetch'
-    'Docker.DockerDesktop'
-    'TablePlus.TablePlus'
-    'Bruno.Bruno'
-    'BeyondCode.Herd'
     'GoLang.Go'
-    'AutoHotkey.AutoHotkey'
 )
 
 foreach ($pkg in $wingetPackages) {
     winget install --id $pkg --exact --silent --accept-package-agreements --accept-source-agreements
 }
 
-# 3. PowerShell modules used by the profile
+# 3. WSL + Arch distro (skipped if WSL already present with Arch)
+if (Get-Command wsl -ErrorAction SilentlyContinue) {
+    if (-not (Get-AppxPackage yuk7.archwsl -ErrorAction SilentlyContinue)) {
+        Write-Host 'installing ArchWSL (sideload from GitHub)'
+        $ver = '26.4.2.0'
+        $base = "https://github.com/yuk7/ArchWSL/releases/download/$ver"
+        $cert = "$env:TEMP\ArchWSL-$ver.cer"
+        $appx = "$env:TEMP\ArchWSL-$ver.appx"
+        try {
+            Invoke-WebRequest "$base/ArchWSL_Online-AppX_${ver}_x64.cer" -OutFile $cert
+            Invoke-WebRequest "$base/ArchWSL_Online-AppX_${ver}_x64.appx" -OutFile $appx
+            Import-Certificate -FilePath $cert -CertStoreLocation Cert:\LocalMachine\TrustedPublisher | Out-Null
+            Add-AppxPackage -Path $appx
+            Remove-Item $cert, $appx -ErrorAction SilentlyContinue
+            Write-Host '  first launch "Arch" once (admin) to register the distro.'
+        } catch {
+            Write-Warning "ArchWSL sideload failed: $_"
+        }
+    }
+}
+
+# 4. PowerShell modules used by the profile
 $profileModules = @('syntax-highlighting', 'ps-color-scripts')
 
 foreach ($m in $profileModules) {
@@ -142,7 +158,7 @@ foreach ($m in $profileModules) {
 
 Write-Host ''
 Write-Host 'done. notes:'
-Write-Host '  - WSL needs a distro: install ArchWSL from the Microsoft Store (or manually).'
-Write-Host '  - then run the WSL side: git clone https://github.com/bymaul/winfiles ~/winfiles && ~/winfiles/install-wsl.sh'
+Write-Host '  - if ArchWSL was just installed: launch "Arch" once (admin) to register the distro, then'
+Write-Host '    git clone https://github.com/bymaul/winfiles ~/winfiles && ~/winfiles/install-wsl.sh'
 Write-Host '  - Windows Terminal writes state files into the repo dir; they are gitignored.'
 Write-Host '  - restart PowerShell and Windows Terminal to pick up the new config.'

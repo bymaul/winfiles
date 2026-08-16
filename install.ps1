@@ -167,9 +167,11 @@ foreach ($m in $profileModules) {
     }
 }
 
+$wslRepo = ('/mnt/' + [char]::ToLowerInvariant($Repo[0]) + $Repo.Substring(2)) -replace '\\', '/'
+
 Write-Host ''
 Write-Host 'done. notes:'
-Write-Host "  - WSL: no clone needed, run $Repo\install-wsl.sh from WSL (/mnt/c/Users/Maulana/winfiles/install-wsl.sh)."
+Write-Host "  - WSL: no clone needed - run $wslRepo/install-wsl.sh"
 Write-Host '  - if ArchWSL was just installed: launch "Arch" once (admin) to register the distro first.'
 Write-Host '  - Windows Terminal writes state files into the repo dir; they are gitignored.'
 Write-Host '  - restart PowerShell and Windows Terminal to pick up the new config.'

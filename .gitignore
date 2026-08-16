@@ -16,3 +16,7 @@ windows/WindowsTerminal/settings-history.json
 # PowerShell module/script installs land in the junctioned profile dir
 windows/PowerShell/Modules/
 windows/PowerShell/Scripts/
+
+# lazygit
+lazygit/state.yml
+

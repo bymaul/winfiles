@@ -12,3 +12,7 @@ bun.lock
 # Windows Terminal writes these into the junctioned repo dir
 windows/WindowsTerminal/state.json
 windows/WindowsTerminal/settings-history.json
+
+# PowerShell module/script installs land in the junctioned profile dir
+windows/PowerShell/Modules/
+windows/PowerShell/Scripts/

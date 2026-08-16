@@ -11,6 +11,7 @@ on:
       - "opencode/**"
       - "zsh/**"
       - "tmux/**"
+  workflow_dispatch:
 
 concurrency:
   group: sync
@@ -23,23 +24,29 @@ jobs:
       OTHER_REPO: bymaul/dotfiles
       SYNC_BRANCH: sync/from-winfiles
     steps:
-      - name: Skip if target repo unreachable
+      - name: Check token and target repo
+        id: check
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
             echo "GH_TOKEN secret not set yet - skipping sync"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           if ! git ls-remote "https://github.com/$OTHER_REPO.git" >/dev/null 2>&1; then
             echo "Target repo $OTHER_REPO not reachable yet - skipping sync"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
 
       - name: Checkout winfiles
+        if: steps.check.outputs.skip != 'true'
         uses: actions/checkout@v4
 
       - name: Checkout other repo
+        if: steps.check.outputs.skip != 'true'
         uses: actions/checkout@v4
         with:
           repository: ${{ env.OTHER_REPO }}
@@ -47,6 +54,7 @@ jobs:
           path: other
 
       - name: Copy shared packages into other repo
+        if: steps.check.outputs.skip != 'true'
         run: |
           for dir in nvim starship bat lazygit opencode zsh tmux; do
             if [ -d "$dir" ]; then
@@ -55,6 +63,7 @@ jobs:
           done
 
       - name: Open or update sync PR
+        if: steps.check.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |

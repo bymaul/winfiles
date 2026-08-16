@@ -1,7 +1,7 @@
 # install.ps1 - bootstrap a fresh Windows machine from winfiles.
-# Links configs (directory junctions), then installs the coding toolchain
-# (choco + winget) and the PowerShell modules the profile needs. Idempotent:
-# safe to re-run after every git pull.
+# Links configs (junctions for dirs, symlinks for files), then installs the
+# coding toolchain (choco + winget) and the PowerShell modules the profile
+# needs. Idempotent: safe to re-run after every git pull.
 #
 # Run once, from an elevated PowerShell 7:
 #   pwsh -ExecutionPolicy RemoteSigned -File .\install.ps1
@@ -13,13 +13,14 @@ $ErrorActionPreference = 'Stop'
 
 $Repo = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-function New-ConfigJunction {
+function New-ConfigLink {
     param(
         [Parameter(Mandatory = $true)][string]$Link,
         [Parameter(Mandatory = $true)][string]$Target
     )
 
     $resolved = (Resolve-Path (Join-Path $Repo $Target)).Path
+    $isDir = (Get-Item $resolved -Force).PSIsContainer
 
     if (Test-Path $Link) {
         $item = Get-Item $Link -Force
@@ -29,7 +30,7 @@ function New-ConfigJunction {
                 Write-Host "already linked: $Link"
                 return
             }
-            Write-Host "replacing junction: $Link"
+            Write-Host "replacing link: $Link"
             Remove-Item $Link -Force
         } else {
             $backup = "$Link.bak.$(Get-Date -Format yyyyMMddHHmmss)"
@@ -43,23 +44,24 @@ function New-ConfigJunction {
         New-Item -ItemType Directory -Path $parent -Force | Out-Null
     }
 
-    New-Item -ItemType Junction -Path $Link -Target $resolved | Out-Null
+    $type = if ($isDir) { 'Junction' } else { 'SymbolicLink' }
+    New-Item -ItemType $type -Path $Link -Target $resolved | Out-Null
     Write-Host "linked $Link -> $resolved"
 }
 
 Write-Host "linking configs (from $Repo)"
 
-$junctions = @(
-    @{ Link = "$env:LOCALAPPDATA\nvim";                Target = 'nvim' },
-    @{ Link = "$env:APPDATA\bat";                      Target = 'bat' },
-    @{ Link = "$env:APPDATA\lazygit";                  Target = 'lazygit' },
-    @{ Link = "$env:APPDATA\starship";                 Target = 'starship' },
-    @{ Link = "$env:USERPROFILE\.config\opencode";     Target = 'opencode' },
-    @{ Link = "$env:USERPROFILE\Documents\PowerShell"; Target = 'windows\PowerShell' }
+$links = @(
+    @{ Link = "$env:LOCALAPPDATA\nvim";                 Target = 'nvim' },
+    @{ Link = "$env:APPDATA\bat";                       Target = 'bat' },
+    @{ Link = "$env:LOCALAPPDATA\lazygit";              Target = 'lazygit' },
+    @{ Link = "$env:USERPROFILE\.config\opencode";      Target = 'opencode' },
+    @{ Link = "$env:USERPROFILE\.config\starship.toml"; Target = 'starship\starship.toml' },
+    @{ Link = "$env:USERPROFILE\Documents\PowerShell";  Target = 'windows\PowerShell' }
 )
 
-foreach ($j in $junctions) {
-    New-ConfigJunction -Link $j.Link -Target $j.Target
+foreach ($l in $links) {
+    New-ConfigLink -Link $l.Link -Target $l.Target
 }
 
 $wtLocalStates = @(
@@ -71,7 +73,7 @@ $wtLocalStates = @(
 foreach ($wt in $wtLocalStates) {
     if (Test-Path $wt) {
         Write-Host "linking Windows Terminal settings"
-        New-ConfigJunction -Link $wt -Target 'windows\WindowsTerminal'
+        New-ConfigLink -Link $wt -Target 'windows\WindowsTerminal'
         break
     }
 }
@@ -105,6 +107,12 @@ $chocoPackages = @(
 
 foreach ($pkg in $chocoPackages) {
     choco install $pkg -y --no-progress --limit-output
+}
+
+# register the vendored bat theme (bat reads its cache, not themes/ on disk)
+if (Get-Command bat -ErrorAction SilentlyContinue) {
+    bat cache --build | Out-Null
+    Write-Host 'rebuilt bat cache'
 }
 
 # 2. winget packages

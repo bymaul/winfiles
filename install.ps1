@@ -101,11 +101,10 @@ $chocoPackages = @(
     'SQLite'
     'vcredist140'
     'zig'
-    'zoxide'
 )
 
 foreach ($pkg in $chocoPackages) {
-    choco install $pkg -y --no-progress --limit-output
+    choco upgrade $pkg -y --no-progress --limit-output
 }
 
 # register the vendored bat theme (bat reads its cache, not themes/ on disk)
@@ -126,6 +125,7 @@ $wingetPackages = @(
     'Neovim.Neovim'
     'Starship.Starship'
     'eza-community.eza'
+    'ajeetdsouza.zoxide'
     'Fastfetch-cli.Fastfetch'
     'GoLang.Go'
 )

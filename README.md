@@ -25,6 +25,17 @@ Re-run `.\install.ps1` after every `git pull` to re-link and update.
 
 ## WSL
 
+No second clone needed on the same machine - the Windows copy is already
+visible to WSL at `/mnt/c/Users/Maulana/winfiles`:
+
+```sh
+/mnt/c/Users/Maulana/winfiles/install-wsl.sh
+exec zsh
+chsh -s /usr/bin/zsh   # once: make zsh the default shell
+```
+
+On a WSL-only machine, clone once and run:
+
 ```sh
 git clone https://github.com/bymaul/winfiles
 ~/winfiles/install-wsl.sh

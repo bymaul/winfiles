@@ -169,7 +169,7 @@ foreach ($m in $profileModules) {
 
 Write-Host ''
 Write-Host 'done. notes:'
-Write-Host '  - if ArchWSL was just installed: launch "Arch" once (admin) to register the distro, then'
-Write-Host '    git clone https://github.com/bymaul/winfiles ~/winfiles && ~/winfiles/install-wsl.sh'
+Write-Host "  - WSL: no clone needed, run $Repo\install-wsl.sh from WSL (/mnt/c/Users/Maulana/winfiles/install-wsl.sh)."
+Write-Host '  - if ArchWSL was just installed: launch "Arch" once (admin) to register the distro first.'
 Write-Host '  - Windows Terminal writes state files into the repo dir; they are gitignored.'
 Write-Host '  - restart PowerShell and Windows Terminal to pick up the new config.'

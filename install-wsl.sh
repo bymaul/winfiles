@@ -70,6 +70,7 @@ if command -v stow >/dev/null 2>&1; then
     stow_pkg lazygit "$HOME/.config"
     stow_pkg opencode "$HOME/.config"
     stow_pkg starship "$HOME/.config"
+    stow_pkg fastfetch "$HOME/.config"
 else
     warn "stow not found - using plain symlinks"
     link "$REPO/wsl/zsh" .zshenv "$HOME/.zshenv"
@@ -80,6 +81,7 @@ else
     link "$REPO/lazygit" . "$HOME/.config/lazygit"
     link "$REPO/wsl/opencode" . "$HOME/.config/opencode"
     link "$REPO/starship" starship.toml "$HOME/.config/starship.toml"
+    link "$REPO/fastfetch" . "$HOME/.config/fastfetch"
 fi
 
 # register vendored bat theme
@@ -108,7 +110,7 @@ fi
 # requirements check (warn-only; full list in README)
 log "checking requirements"
 missing=0
-for bin in zsh tmux nvim starship bat lazygit opencode; do
+for bin in zsh tmux nvim starship bat lazygit opencode fastfetch; do
     if ! command -v "$bin" >/dev/null 2>&1; then
         printf '  \033[1;31m%s\033[0m missing\n' "$bin"
         missing=1

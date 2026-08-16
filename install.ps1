@@ -55,7 +55,6 @@ $links = @(
     @{ Link = "$env:LOCALAPPDATA\nvim";                 Target = 'nvim' },
     @{ Link = "$env:APPDATA\bat";                       Target = 'bat' },
     @{ Link = "$env:LOCALAPPDATA\lazygit";              Target = 'lazygit' },
-    @{ Link = "$env:USERPROFILE\.config\opencode";      Target = 'opencode' },
     @{ Link = "$env:USERPROFILE\.config\starship.toml"; Target = 'starship\starship.toml' },
     @{ Link = "$env:USERPROFILE\Documents\PowerShell";  Target = 'windows\PowerShell' }
 )

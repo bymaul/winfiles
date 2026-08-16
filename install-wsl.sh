@@ -78,7 +78,7 @@ else
     link "$REPO/nvim" . "$HOME/.config/nvim"
     link "$REPO/bat" . "$HOME/.config/bat"
     link "$REPO/lazygit" . "$HOME/.config/lazygit"
-    link "$REPO/opencode" . "$HOME/.config/opencode"
+    link "$REPO/wsl/opencode" . "$HOME/.config/opencode"
     link "$REPO/starship" starship.toml "$HOME/.config/starship.toml"
 fi
 

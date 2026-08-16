@@ -5,9 +5,9 @@ Windows and WSL dotfiles.
 ## Layout
 
 ```
-nvim/ starship/ bat/ lazygit/ opencode/   # cross-platform (root)
-wsl/zsh/ wsl/tmux/                         # WSL-only
-windows/                                   # native Windows (PowerShell, Windows Terminal)
+nvim/ starship/ bat/ lazygit/                # cross-platform (root)
+wsl/zsh/ wsl/tmux/ wsl/opencode/              # WSL-only
+windows/                                     # native Windows (PowerShell, Windows Terminal)
 install.ps1  install-wsl.sh
 ```
 

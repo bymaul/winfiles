@@ -8,10 +8,19 @@ Windows and WSL dotfiles, the Windows-side half of a two-repo setup.
 | `bymaul/winfiles` | this repo: WSL + native Windows |
 
 The seven shared packages (`nvim`, `starship`, `bat`, `lazygit`, `opencode`,
-`zsh`, `tmux`) live at the root of both repos, byte-identical, and are synced
-bidirectionally by `.github/workflows/sync.yml`. Desktop-only configs (hypr,
-waybar, mako, rofi, kitty, wleave, gtk, vague-theme, wallpapers, bin, btop,
-yazi) live only in `dotfiles`.
+`zsh`, `tmux`) are synced bidirectionally by `.github/workflows/sync.yml`. The
+cross-platform ones live at the repo root; the WSL-only ones (`zsh`, `tmux`)
+live under `wsl/`. Desktop-only configs (hypr, waybar, mako, rofi, kitty,
+wleave, gtk, vague-theme, wallpapers, bin, btop, yazi) live only in `dotfiles`.
+
+```
+winfiles/
+├── nvim/ starship/ bat/ lazygit/ opencode/   # cross-platform (root)
+├── wsl/zsh/ wsl/tmux/                         # WSL-only
+├── windows/                                   # native Windows
+├── install-wsl.sh  install.ps1
+└── .github/workflows/sync.yml
+```
 
 ## Install
 
@@ -55,6 +64,9 @@ A push to `master` touching any shared package opens a sync PR in the other repo
 via the `GH_TOKEN` secret (PAT with `repo` scope, set in both repos). The PR
 auto-merges when clean; on conflict it stays open for manual resolution. An
 empty diff produces no PR, which keeps the loop between the two repos safe.
+
+`dotfiles` keeps the shared configs flat at its root, so `zsh`/`tmux` are
+mapped between `wsl/zsh`/`wsl/tmux` here and `zsh`/`tmux` there during sync.
 
 Line endings are pinned to LF (`.gitattributes`, `core.autocrlf=false`) so
 synced files stay byte-identical across platforms.

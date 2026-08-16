@@ -9,8 +9,8 @@ on:
       - "bat/**"
       - "lazygit/**"
       - "opencode/**"
-      - "zsh/**"
-      - "tmux/**"
+      - "wsl/zsh/**"
+      - "wsl/tmux/**"
   workflow_dispatch:
 
 concurrency:
@@ -56,11 +56,19 @@ jobs:
       - name: Copy shared packages into other repo
         if: steps.check.outputs.skip != 'true'
         run: |
-          for dir in nvim starship bat lazygit opencode zsh tmux; do
-            if [ -d "$dir" ]; then
-              rsync -a --delete "$dir/" "other/$dir/"
-            fi
-          done
+          copy_dir() {
+            local src="$1" dst="$2"
+            [ -d "$src" ] || return 0
+            rsync -a --delete "$src/" "other/$dst/"
+          }
+          # <local path> <path in the other repo>
+          copy_dir nvim nvim
+          copy_dir starship starship
+          copy_dir bat bat
+          copy_dir lazygit lazygit
+          copy_dir opencode opencode
+          copy_dir wsl/zsh zsh
+          copy_dir wsl/tmux tmux
 
       - name: Open or update sync PR
         if: steps.check.outputs.skip != 'true'

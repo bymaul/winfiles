@@ -1,0 +1,16 @@
+Set-Alias -Name vim -Value nvim
+Set-Alias -Name open -Value explorer
+Set-Alias -Name ls -Value Get-ChildItemFormatted
+Set-Alias -Name touch -Value New-File
+Set-Alias -Name grep -Value Find-String
+Set-Alias -Name cat -Value bat
+Set-Alias -Name which -Value Get-CommandDefinition
+Set-Alias -Name nah -Value Reset-GitChanges
+Set-Alias -Name glog -Value Get-GitLog
+Set-Alias -Name art -Value Invoke-LaravelArtisan
+Set-Alias -Name us -Value Update-SystemSoftware
+Set-Alias -Name lg -Value lazygit
+Set-Alias -Name rmrf -Value Remove-ItemForceRecursive
+Set-Alias -Name opencode -Value Invoke-OpenCodeWSL
+Set-Alias -Name su -Value Update-ShellElevation
+Set-Alias -Name oc -Value opencode

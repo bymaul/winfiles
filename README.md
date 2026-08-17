@@ -2,6 +2,8 @@
 
 Windows and WSL dotfiles.
 
+![screenshot](screenshot.png)
+
 ## Layout
 
 ```

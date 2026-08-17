@@ -107,6 +107,14 @@ foreach ($pkg in $wingetPackages) {
 
 Refresh-Path
 
+if (-not (Test-Command 'pay-respects')) {
+    Write-Host '  Installing pay-respects...'
+    irm https://raw.githubusercontent.com/iffse/pay-respects/main/install.ps1 | iex
+    Refresh-Path
+} else {
+    Write-Host '  pay-respects (installed)'
+}
+
 # ---------------------------------------------------------------------------
 # 3. Config links
 # ---------------------------------------------------------------------------

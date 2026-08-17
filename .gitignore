@@ -19,4 +19,4 @@ windows/PowerShell/Scripts/
 
 # lazygit
 lazygit/state.yml
-
+lazygit/github_pull_requests.json

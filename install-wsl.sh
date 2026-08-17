@@ -6,9 +6,6 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 
-log()  { printf '\033[1;36m==>\033[0m %s\n' "$*"; }
-warn() { printf '\033[1;33m==>\033[0m %s\n' "$*" >&2; }
-
 link() {
     local src="$(readlink -f "$1/$2")" tgt="$3"
     [ -L "$tgt" ] && [ "$(readlink -f "$tgt")" = "$src" ] && return 0
@@ -46,7 +43,7 @@ if command -v stow >/dev/null 2>&1; then
     for p in zsh tmux; do stow_pkg "$p" "$HOME"; done
     for p in nvim bat lazygit opencode starship fastfetch; do stow_pkg "$p" "$HOME/.config"; done
 else
-    warn "stow not found - using plain symlinks"
+    echo '  stow not found - using plain symlinks'
     link "$REPO/wsl/zsh" .zshenv "$HOME/.zshenv"
     link "$REPO/wsl/zsh" .config/zsh "$HOME/.config/zsh"
     link "$REPO/wsl/tmux" .tmux.conf "$HOME/.tmux.conf"
@@ -66,7 +63,7 @@ if [ -x "$HOME/.opencode/bin/opencode" ]; then
     mkdir -p "$HOME/.local/bin"
     ln -sfn "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
 elif ! command -v opencode >/dev/null 2>&1; then
-    log "installing opencode"
+    echo '  installing opencode'
     curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path
     mkdir -p "$HOME/.local/bin"
     ln -sfn "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
@@ -75,8 +72,14 @@ fi
 # check requirements
 missing=0
 for bin in zsh tmux nvim starship bat lazygit opencode fastfetch; do
-    command -v "$bin" >/dev/null 2>&1 || { printf '  \033[1;31m%s\033[0m missing\n' "$bin"; missing=1; }
+    command -v "$bin" >/dev/null 2>&1 || { echo "  $bin missing"; missing=1; }
 done
-[ "$missing" -eq 0 ] || warn "some requirements missing - see README.md"
+[ "$missing" -eq 0 ] || echo '  some requirements missing - see README.md'
 
-log "done. run 'exec zsh' to reload."
+echo ''
+echo 'Done.'
+echo ''
+echo 'Next steps:'
+echo '  exec zsh'
+echo '  chsh -s /usr/bin/zsh'
+echo ''

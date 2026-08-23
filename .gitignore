@@ -20,3 +20,6 @@ windows/PowerShell/Scripts/
 # lazygit
 lazygit/state.yml
 lazygit/github_pull_requests.json
+
+# tmux plugin clones (managed by tpm / install-wsl.sh)
+wsl/tmux/plugins/

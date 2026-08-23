@@ -2,8 +2,6 @@
 
 Windows and WSL dotfiles.
 
-![screenshot](screenshot.png)
-
 ## Layout
 
 ```
@@ -20,7 +18,14 @@ Fresh machine, elevated PowerShell 7:
 ```powershell
 git clone https://github.com/bymaul/winfiles
 cd winfiles
-.\install.ps1    # links configs (junctions), installs the toolchain (choco + winget), sets up WSL + Arch
+.\install.ps1    # links configs (junctions), installs the toolchain (scoop + winget), sets up WSL + Arch
+```
+
+Existing config files/directories are backed up next to their location
+(`<name>.bak.<timestamp>`). Pass `-NoBackup` to replace them instead:
+
+```powershell
+.\install.ps1 -NoBackup
 ```
 
 Re-run `.\install.ps1` after every `git pull` to re-link and update.

@@ -1,16 +1,17 @@
-Set-Alias -Name vim -Value nvim
-Set-Alias -Name open -Value explorer
-Set-Alias -Name ls -Value Get-ChildItemFormatted
-Set-Alias -Name touch -Value New-File
-Set-Alias -Name grep -Value Find-String
-Set-Alias -Name cat -Value bat
-Set-Alias -Name which -Value Get-CommandDefinition
-Set-Alias -Name nah -Value Reset-GitChanges
-Set-Alias -Name glog -Value Get-GitLog
-Set-Alias -Name art -Value Invoke-LaravelArtisan
-Set-Alias -Name us -Value Update-SystemSoftware
-Set-Alias -Name lg -Value lazygit
-Set-Alias -Name rmrf -Value Remove-ItemForceRecursive
-Set-Alias -Name opencode -Value Invoke-OpenCodeWSL
-Set-Alias -Name su -Value Update-ShellElevation
-Set-Alias -Name oc -Value opencode
+Set-Alias vim nvim
+Set-Alias open explorer
+Set-Alias ls Get-ChildItemFormatted
+Set-Alias ll Get-ChildItemFormatted
+Set-Alias touch New-File
+Set-Alias grep Find-String
+Set-Alias cat bat
+Set-Alias which Get-CommandDefinition
+Set-Alias nah Reset-GitChanges
+Set-Alias glog Get-GitLog
+Set-Alias art Invoke-LaravelArtisan
+Set-Alias us Update-SystemSoftware
+Set-Alias lg lazygit
+Set-Alias rmrf Remove-ItemForceRecursive
+Set-Alias opencode Invoke-OpenCodeWSL
+Set-Alias su Update-ShellElevation
+Set-Alias oc opencode

@@ -3,7 +3,7 @@ function Invoke-Starship-TransientFunction { &starship module character }
 Invoke-Expression (&starship init powershell)
 Enable-TransientPrompt
 
-Invoke-Expression (& { (zoxide init powershell | Out-String) })
+Invoke-Expression (& zoxide init powershell | Out-String)
 
 fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
 

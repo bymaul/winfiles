@@ -2,9 +2,16 @@
 # Run once from an elevated PowerShell 7:
 #   pwsh -ExecutionPolicy RemoteSigned -File .\install.ps1
 # Safe to re-run after every git pull.
+#
+# Flags:
+#   -NoBackup    Replace existing config files/directories instead of backing them up.
 
 #Requires -RunAsAdministrator
 #Requires -Version 7.0
+
+param(
+    [switch]$NoBackup
+)
 
 $ErrorActionPreference = 'Stop'
 $Repo = (Resolve-Path -LiteralPath $PSScriptRoot).Path
@@ -16,6 +23,26 @@ function Refresh-Path {
 function Test-Command {
     param([Parameter(Mandatory)][string]$Name)
     $null -ne (Get-Command $Name -ErrorAction SilentlyContinue)
+}
+
+function Install-ScoopPackage {
+    param([Parameter(Mandatory)][string]$Name)
+    if ((scoop list $Name 2>$null | Out-String) -match "(?m)^\s*$([regex]::Escape($Name))\s") {
+        Write-Host "  scoop/$Name (installed)"
+    } else {
+        Write-Host "  scoop/$Name"
+        scoop install $Name
+    }
+}
+
+function Install-WingetPackage {
+    param([Parameter(Mandatory)][string]$Id)
+    if ((winget list --id $Id --exact --accept-source-agreements 2>$null | Out-String) -match [regex]::Escape($Id)) {
+        Write-Host "  winget/$Id (installed)"
+    } else {
+        Write-Host "  winget/$Id"
+        winget install --id $Id --exact --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+    }
 }
 
 function New-ConfigLink {
@@ -33,9 +60,14 @@ function New-ConfigLink {
             }
             Remove-Item -LiteralPath $Link -Force -Recurse
         } else {
-            $backup = "$Link.bak.$(Get-Date -Format 'yyyyMMddHHmmss')"
-            Move-Item -LiteralPath $Link -Destination $backup
-            Write-Host "  backed up: $Link -> $backup"
+            if ($NoBackup) {
+                Remove-Item -LiteralPath $Link -Force -Recurse
+                Write-Host "  removed: $Link"
+            } else {
+                $backup = "$Link.bak.$(Get-Date -Format 'yyyyMMddHHmmss')"
+                Move-Item -LiteralPath $Link -Destination $backup
+                Write-Host "  backed up: $Link -> $backup"
+            }
         }
     }
 
@@ -55,11 +87,18 @@ function New-ConfigLink {
 
 Refresh-Path
 
-if (-not (Test-Command 'choco')) {
-    Write-Host 'Installing Chocolatey...'
-    Set-ExecutionPolicy Bypass -Scope Process -Force
-    Invoke-RestMethod 'https://community.chocolatey.org/install.ps1' | Invoke-Expression
+if (-not (Test-Command 'scoop')) {
+    Write-Host 'Installing Scoop...'
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    $scoopInstall = Join-Path $env:TEMP 'install-scoop.ps1'
+    Invoke-RestMethod 'https://get.scoop.sh' -OutFile $scoopInstall
+    & $scoopInstall -RunAsAdmin
+    Remove-Item $scoopInstall -Force
     Refresh-Path
+}
+
+if (-not (Test-Command 'scoop')) {
+    throw 'Scoop installation failed.'
 }
 
 if (-not (Test-Command 'winget')) {
@@ -72,38 +111,60 @@ if (-not (Test-Command 'winget')) {
 
 Write-Host ''
 
-$chocoPackages = @(
-    'bat', 'fd', 'fnm', 'fzf', 'lazygit', 'less', 'mingw'
-    'nerd-fonts-JetBrainsMono', 'pnpm', 'ripgrep', 'sqlite'
-    'vcredist140', 'zig'
+$scoopBuckets = @(
+    'extras'
+    'nerd-fonts'
+)
+
+$scoopPackages = @(
+    '7zip'
+    'bat'
+    'eza'
+    'fastfetch'
+    'fd'
+    'fnm'
+    'fzf'
+    'gh'
+    'go'
+    'JetBrainsMono-NF'
+    'lazygit'
+    'less'
+    'mingw'
+    'neovim'
+    'pnpm'
+    'ripgrep'
+    'sqlite'
+    'starship'
+    'vcredist2022'
+    'zig'
+    'zoxide'
 )
 
 $wingetPackages = @(
-    'Microsoft.PowerShell', 'Microsoft.WindowsTerminal', 'Microsoft.PowerToys'
-    'Microsoft.WSL', 'Microsoft.VisualStudioCode', 'Git.Git', 'GitHub.cli'
-    'Neovim.Neovim', 'Starship.Starship', 'eza-community.eza'
-    'ajeetdsouza.zoxide', 'Fastfetch-cli.Fastfetch', 'GoLang.Go'
+    'Microsoft.PowerShell'
+    'Microsoft.WindowsTerminal'
+    'Microsoft.PowerToys'
+    'Microsoft.WSL'
+    'Microsoft.VisualStudioCode'
 )
 
-foreach ($pkg in $chocoPackages) {
-    $check = choco list --local-only --exact $pkg --limit-output 2>$null
-    if ($check -match "^$([regex]::Escape($pkg))\|") {
-        Write-Host "  choco/$pkg (installed)"
+# git first: scoop manages buckets through git
+Install-ScoopPackage 'git'
+
+foreach ($bucket in $scoopBuckets) {
+    $installed = @(scoop bucket list 2>$null | ForEach-Object { if ($_.name) { $_.name } else { $_ } })
+
+    if ($installed -contains $bucket) {
+        Write-Host "  scoop bucket/$bucket (installed)"
     } else {
-        Write-Host "  choco/$pkg"
-        choco install $pkg --yes --no-progress
+        Write-Host "  scoop bucket/$bucket"
+        scoop bucket add $bucket
     }
 }
 
-foreach ($pkg in $wingetPackages) {
-    $check = winget list --id $pkg --exact --accept-source-agreements 2>$null | Out-String
-    if ($check -match [regex]::Escape($pkg)) {
-        Write-Host "  winget/$pkg (installed)"
-    } else {
-        Write-Host "  winget/$pkg"
-        winget install --id $pkg --exact --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
-    }
-}
+foreach ($pkg in $scoopPackages) { Install-ScoopPackage $pkg }
+
+foreach ($pkg in $wingetPackages) { Install-WingetPackage $pkg }
 
 Refresh-Path
 
@@ -161,6 +222,8 @@ if (-not (Get-Module -ListAvailable -Name $module)) {
         Install-Module -Name $module -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
     }
     Write-Host "  installed: $module"
+} else {
+    Write-Host "  $module (installed)"
 }
 
 # ---------------------------------------------------------------------------

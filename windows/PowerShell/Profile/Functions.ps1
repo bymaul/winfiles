@@ -104,9 +104,9 @@ function Update-ShellElevation {
 }
 
 function Update-SystemSoftware {
-    sudo winget upgrade --all --include-unknown --silent --verbose
+    scoop update
+    scoop update *
     winget upgrade --all --include-unknown --silent --verbose
-    sudo choco upgrade all -y
 }
 
 # ---------------------------------------------------------------------------

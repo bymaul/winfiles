@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # install-wsl.sh - link shared configs into WSL $HOME. Idempotent: safe to re-run
-# after every git pull. Uses GNU Stow when available, plain symlinks otherwise.
+# after every git pull.
 
 set -euo pipefail
 
@@ -16,44 +16,18 @@ link() {
     ln -s "$src" "$tgt"
 }
 
-backup_conflicts() {
-    local pkgdir="$1" tgt="$2"
-    while IFS= read -r rel; do
-        [ -z "$rel" ] && continue
-        local path="$tgt/$rel"
-        if [ -L "$path" ]; then
-            [ "$(readlink -f "$path")" != "$(readlink -f "$pkgdir/$rel")" ] && mv "$path" "$path.bak.$(date +%s)"
-        elif [ -e "$path" ]; then
-            [ -d "$path" ] && [ -d "$pkgdir/$rel" ] || mv "$path" "$path.bak.$(date +%s)"
-        fi
-    done < <(cd "$pkgdir" && find . | sed 's|^\./||')
-}
-
 export PATH="$HOME/.local/bin:$PATH"
 
 # link configs
-if command -v stow >/dev/null 2>&1; then
-    stow_pkg() {
-        local pkg="$1" tgt="$2" dir="$REPO"
-        [ -d "$REPO/wsl/$pkg" ] && dir="$REPO/wsl"
-        backup_conflicts "$dir/$pkg" "$tgt"
-        stow --dir "$dir" --target "$tgt" -S "$pkg"
-    }
-    mkdir -p "$HOME/.config"
-    for p in zsh tmux; do stow_pkg "$p" "$HOME"; done
-    for p in nvim bat lazygit opencode starship fastfetch; do stow_pkg "$p" "$HOME/.config"; done
-else
-    echo '  stow not found - using plain symlinks'
-    link "$REPO/wsl/zsh" .zshenv "$HOME/.zshenv"
-    link "$REPO/wsl/zsh" .config/zsh "$HOME/.config/zsh"
-    link "$REPO/wsl/tmux" .tmux.conf "$HOME/.tmux.conf"
-    link "$REPO/nvim" . "$HOME/.config/nvim"
-    link "$REPO/bat" . "$HOME/.config/bat"
-    link "$REPO/lazygit" . "$HOME/.config/lazygit"
-    link "$REPO/wsl/opencode" . "$HOME/.config/opencode"
-    link "$REPO/starship" starship.toml "$HOME/.config/starship.toml"
-    link "$REPO/fastfetch" . "$HOME/.config/fastfetch"
-fi
+link "$REPO/wsl/zsh" .zshenv "$HOME/.zshenv"
+link "$REPO/wsl/zsh" .config/zsh "$HOME/.config/zsh"
+link "$REPO/wsl/tmux" .tmux.conf "$HOME/.tmux.conf"
+link "$REPO/nvim" . "$HOME/.config/nvim"
+link "$REPO/bat" . "$HOME/.config/bat"
+link "$REPO/lazygit" . "$HOME/.config/lazygit"
+link "$REPO/wsl/opencode" . "$HOME/.config/opencode"
+link "$REPO/starship" starship.toml "$HOME/.config/starship.toml"
+link "$REPO/fastfetch" . "$HOME/.config/fastfetch"
 
 # bat cache
 command -v bat >/dev/null 2>&1 && bat cache --build >/dev/null 2>&1

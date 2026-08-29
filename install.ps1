@@ -233,25 +233,21 @@ if (-not (Get-Module -ListAvailable -Name $module)) {
 Refresh-Path
 
 if (Test-Command 'wsl') {
-    if (-not (Get-AppxPackage 'yuk7.archwsl' -ErrorAction SilentlyContinue)) {
-        $ver = '26.4.2.0'
-        $base = "https://github.com/yuk7/ArchWSL/releases/download/$ver"
-        $cert = Join-Path $env:TEMP "ArchWSL-$ver.cer"
-        $appx = Join-Path $env:TEMP "ArchWSL-$ver.appx"
-        try {
-            Invoke-WebRequest "$base/ArchWSL_Online-AppX_${ver}_x64.cer" -OutFile $cert
-            Invoke-WebRequest "$base/ArchWSL_Online-AppX_${ver}_x64.appx" -OutFile $appx
-            Import-Certificate -FilePath $cert -CertStoreLocation Cert:\LocalMachine\TrustedPublisher | Out-Null
-            Add-AppxPackage -Path $appx
-            Write-Host "  installed: ArchWSL $ver"
-        } catch {
-            Write-Warning "ArchWSL install failed: $_"
-        } finally {
-            Remove-Item $cert, $appx -Force -ErrorAction SilentlyContinue
-        }
+    Write-Host ''
+
+    wsl --update
+
+    $archInstalled = @(wsl -l -q) -contains 'archlinux'
+
+    if ($archInstalled) {
+        Write-Host '  Arch Linux (installed)'
     } else {
-        Write-Host "  ArchWSL (installed)"
+        Write-Host '  Installing Arch Linux...'
+        wsl --install archlinux --no-launch
+        Write-Host '  installed: Arch Linux'
     }
+
+    wsl --set-default archlinux
 } else {
     Write-Warning 'wsl.exe not found. Restart Windows, then re-run.'
 }
@@ -270,6 +266,7 @@ Write-Host 'Done.'
 Write-Host ''
 Write-Host 'Next steps:'
 if ($wslRepo) { Write-Host "  $wslRepo/install-wsl.sh" }
-Write-Host '  Launch "Arch" once if ArchWSL was just installed.'
+Write-Host '  Launch "archlinux" once if Arch Linux was just installed.'
+Write-Host '  Run the install-wsl.sh script from inside Arch.'
 Write-Host '  Restart PowerShell and Windows Terminal.'
 Write-Host ''

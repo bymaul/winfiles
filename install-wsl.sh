@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# install-wsl.sh - link shared configs into WSL $HOME. Idempotent: safe to re-run
-# after every git pull.
+# install-wsl.sh - install WSL dependencies and link shared configs into WSL $HOME.
+# Idempotent: safe to re-run after every git pull.
 
 set -euo pipefail
 
@@ -17,6 +17,49 @@ link() {
 }
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# dependencies
+packages=(
+    base-devel
+    bat
+    curl
+    eza
+    fastfetch
+    fd
+    fnm
+    fzf
+    git
+    lazygit
+    less
+    neovim
+    openssh
+    ripgrep
+    tmux
+    zoxide
+    zsh
+)
+
+missing=()
+for pkg in "${packages[@]}"; do
+    pacman -Q "$pkg" &>/dev/null || missing+=("$pkg")
+done
+
+if [ "${#missing[@]}" -gt 0 ]; then
+    echo "  installing: ${missing[*]}"
+    sudo pacman -S --needed --noconfirm "${missing[@]}"
+fi
+
+# AUR helper
+if ! command -v yay >/dev/null 2>&1; then
+    echo '  installing yay'
+    tmpdir="$(mktemp -d)"
+    git clone -q https://aur.archlinux.org/yay.git "$tmpdir/yay"
+    (
+        cd "$tmpdir/yay"
+        makepkg -si --noconfirm
+    )
+    rm -rf "$tmpdir"
+fi
 
 # link configs
 link "$REPO/wsl/zsh" .zshenv "$HOME/.zshenv"
@@ -65,7 +108,7 @@ fi
 
 # check requirements
 missing=0
-for bin in zsh tmux nvim starship bat lazygit opencode fastfetch; do
+for bin in zsh tmux nvim starship bat lazygit opencode fastfetch yay; do
     command -v "$bin" >/dev/null 2>&1 || { echo "  $bin missing"; missing=1; }
 done
 [ "$missing" -eq 0 ] || echo '  some requirements missing - see README.md'

@@ -119,17 +119,6 @@ function mkcd {
     Set-Location $Path
 }
 
-function extract {
-    param([Parameter(Mandatory)][string]$Path)
-    switch -Regex ($Path) {
-        '\.tar\.gz$|\.tgz$' { tar xzf $Path }
-        '\.tar$'            { tar xf $Path }
-        '\.zip$'            { Expand-Archive -Path $Path -DestinationPath '.' }
-        '\.7z$'             { 7z x $Path }
-        '\.rar$'            { unrar x $Path }
-    }
-}
-
 function Get-CommandStats {
     Get-Content (Get-PSReadLineOption).HistorySavePath |
         Where-Object { $_ -notmatch '^\s' } |
@@ -138,88 +127,3 @@ function Get-CommandStats {
         Sort-Object Count -Descending |
         Select-Object -First 20 Count, Name
 }
-
-function Get-Path { $env:PATH -split [System.IO.Path]::PathSeparator }
-
-
-function f {
-	__pr_main suggest
-}
-
-function __pr_main {
-	param(
-			[string]$mode
-			)
-
-		$Command = (Get-History -Count 1).CommandLine
-		__pr_base $mode $Command | Invoke-Expression
-}
-
-function __pr_base {
-	param(
-			[string]$mode,
-			[string]$Command
-			)
-
-	try {
-		$env:_PR_PREFIX = (prompt)
-		$env:_PR_MODE = $mode
-		$env:_PR_LAST_COMMAND = $Command
-		$env:_PR_ALIAS = (Get-Alias | Out-String)
-		$env:_PR_SHELL = "pwsh"
-
-		& 'C:\Users\Maulana\AppData\Roaming\pay-respects\pay-respects.exe'
-
-	} finally {
-		$env_PR_PREFIX = $null;
-		$env:_PR_MODE = $null;
-		$env:_PR_LAST_COMMAND = $null;
-		$env:_PR_ALIAS = $null;
-		$env:_PR_SHELL = $null;
-	}
-}
-
-function __pr_inline {
-	$line = $null
-		$cursor = $null
-		[Microsoft.PowerShell.PSConsoleReadLine]::GetBufferState([ref]$line, [ref]$cursor)
-
-		$mode = 'inline'
-		$command = $line
-
-	$output = __pr_base $mode $command
-
-		if (-not [string]::IsNullOrWhiteSpace($output)) {
-			[Microsoft.PowerShell.PSConsoleReadLine]::Replace(0, $line.Length, $output)
-			[Microsoft.PowerShell.PSConsoleReadLine]::SetCursorPosition($output.Length)
-		}
-	if ($env:_PR_MODE -eq 'inline') {
-		$env:_PR_MODE = $null;
-	}
-}
-
-Set-PSReadLineKeyHandler -Chord Ctrl+x,Ctrl+x -ScriptBlock { __pr_inline }
-
-# Uncomment this block to enable command not found hook
-# It's not very useful as we can't retrieve arguments,
-# function __pr_invoke {
-# 	try {
-# 		&'C:\Users\Maulana\AppData\Roaming\pay-respects\pay-respects.exe' | Invoke-Expression;
-# 	} finally {
-# 		$env:_PR_MODE = $env:null;
-# 		$env:_PR_LAST_COMMAND = $env:null;
-# 		$env:_PR_SHELL = $env:null;
-# 	}
-# }
-
-# $ExecutionContext.InvokeCommand.CommandNotFoundAction = {
-# 	param($commandName, $eventArgs)
-
-# 	$env:_PR_LAST_COMMAND = $commandName -replace '^get-|\.\\','';
-# 	$env:_PR_SHELL = 'pwsh';
-# 	$env:_PR_MODE = 'cnf';
-
-# 	$eventArgs.Command = (Get-Command __pr_invoke);
-# 	$eventArgs.StopSearch = $True;
-# }
-

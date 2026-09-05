@@ -13,5 +13,6 @@ Set-Alias us Update-SystemSoftware
 Set-Alias lg lazygit
 Set-Alias rmrf Remove-ItemForceRecursive
 Set-Alias opencode Invoke-OpenCodeWSL
+Set-Alias tmux Invoke-TmuxWSL
 Set-Alias su Update-ShellElevation
 Set-Alias oc opencode

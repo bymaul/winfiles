@@ -90,6 +90,8 @@ function Invoke-LaravelArtisan { php artisan @args }
 
 function Invoke-OpenCodeWSL { wsl zsh -ic "opencode $($args)" }
 
+function Invoke-TmuxWSL { wsl zsh -ic "tmux $($args)" }
+
 # ---------------------------------------------------------------------------
 # System
 # ---------------------------------------------------------------------------
@@ -106,7 +108,9 @@ function Update-ShellElevation {
 function Update-SystemSoftware {
     scoop update
     scoop update *
-    winget upgrade --all --include-unknown --silent --verbose
+    winget upgrade --all --include-unknown --silent --verbose `
+      --accept-package-agreements `
+      --accept-source-agreements
 }
 
 # ---------------------------------------------------------------------------

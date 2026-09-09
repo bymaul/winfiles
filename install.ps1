@@ -145,7 +145,7 @@ $wingetPackages = @(
     'Microsoft.WindowsTerminal'
     'Microsoft.PowerToys'
     'Microsoft.WSL'
-    'Microsoft.VisualStudioCode'
+    'ZedIndustries.Zed'
 )
 
 # git first: scoop manages buckets through git

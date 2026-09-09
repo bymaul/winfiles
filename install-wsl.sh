@@ -35,9 +35,23 @@ packages=(
     openssh
     ripgrep
     tmux
+    unzip
+    yazi
     zoxide
     zsh
 )
+
+# win32yank
+if ! command -v win32yank.exe >/dev/null 2>&1; then
+    echo '  installing win32yank'
+    mkdir -p "$HOME/.local/bin"
+    curl -fsSL \
+        https://github.com/equalsraf/win32yank/releases/latest/download/win32yank-x64.zip \
+        -o /tmp/win32yank.zip
+    unzip -o /tmp/win32yank.zip -d "$HOME/.local/bin" >/dev/null
+    chmod +x "$HOME/.local/bin/win32yank.exe"
+    rm -f /tmp/win32yank.zip
+fi
 
 missing=()
 for pkg in "${packages[@]}"; do
@@ -50,15 +64,21 @@ if [ "${#missing[@]}" -gt 0 ]; then
 fi
 
 # AUR helper
-if ! command -v yay >/dev/null 2>&1; then
-    echo '  installing yay'
-    tmpdir="$(mktemp -d)"
-    git clone -q https://aur.archlinux.org/yay.git "$tmpdir/yay"
-    (
-        cd "$tmpdir/yay"
-        makepkg -si --noconfirm
-    )
-    rm -rf "$tmpdir"
+if ! command -v paru >/dev/null 2>&1; then
+    echo '  installing paru'
+     tmpdir="$(mktemp -d)"
+    git clone -q https://aur.archlinux.org/paru.git "$tmpdir/paru"
+     (
+        cd "$tmpdir/paru"
+         makepkg -si --noconfirm
+     )
+     rm -rf "$tmpdir"
+ fi
+
+# Remove yay if it was previously installed.
+if pacman -Q yay &>/dev/null; then
+    echo '  removing yay'
+    sudo pacman -Rns --noconfirm yay
 fi
 
 # link configs
@@ -71,6 +91,7 @@ link "$REPO/lazygit" . "$HOME/.config/lazygit"
 link "$REPO/wsl/opencode" . "$HOME/.config/opencode"
 link "$REPO/starship" starship.toml "$HOME/.config/starship.toml"
 link "$REPO/fastfetch" . "$HOME/.config/fastfetch"
+link "$REPO/yazi" . "$HOME/.config/yazi"
 
 # migrate: ~/.tmux.conf moved to ~/.config/tmux
 old_conf="$(readlink -f "$HOME/.tmux.conf" 2>/dev/null || true)"
@@ -108,8 +129,8 @@ fi
 
 # check requirements
 missing=0
-for bin in zsh tmux nvim starship bat lazygit opencode fastfetch yay; do
-    command -v "$bin" >/dev/null 2>&1 || { echo "  $bin missing"; missing=1; }
+for bin in zsh tmux nvim starship bat lazygit opencode fastfetch paru win32yank.exe; do
+     command -v "$bin" >/dev/null 2>&1 || { echo "  $bin missing"; missing=1; }
 done
 [ "$missing" -eq 0 ] || echo '  some requirements missing - see README.md'
 

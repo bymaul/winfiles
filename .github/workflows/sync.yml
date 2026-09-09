@@ -9,6 +9,7 @@ on:
       - "bat/**"
       - "lazygit/**"
       - "fastfetch/**"
+      - "yazi/**"
       - "wsl/zsh/**"
       - "wsl/tmux/**"
       - "wsl/opencode/**"
@@ -86,6 +87,7 @@ jobs:
           sync_dir bat bat
           sync_dir lazygit lazygit
           sync_dir fastfetch fastfetch
+          sync_dir yazi yazi
           sync_dir wsl/opencode opencode
           sync_dir wsl/zsh zsh
           sync_dir wsl/tmux tmux

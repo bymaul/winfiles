@@ -48,7 +48,7 @@ function Install-WingetPackage {
 function New-ConfigLink {
     param([Parameter(Mandatory)][string]$Link, [Parameter(Mandatory)][string]$Target)
 
-    $resolved = (Resolve-Path -LiteralPath (Join-Path $Repo $Target)).Path
+    $resolved = [IO.Path]::GetFullPath((Join-Path $Repo $Target))
     $isDir = (Get-Item -LiteralPath $resolved -Force).PSIsContainer
 
     if (Test-Path -LiteralPath $Link) {
@@ -116,29 +116,35 @@ $scoopBuckets = @(
     'nerd-fonts'
 )
 
-$scoopPackages = @(
-    '7zip'
-    'bat'
-    'eza'
-    'fastfetch'
-    'fd'
-    'fnm'
-    'fzf'
-    'gh'
-    'go'
-    'JetBrainsMono-NF'
-    'lazygit'
-    'less'
-    'mingw'
-    'neovim'
-    'pnpm'
-    'ripgrep'
-    'sqlite'
-    'starship'
-    'vcredist2022'
-    'zig'
-    'zoxide'
-)
+ $scoopPackages = @(
+     '7zip'
+     'bat'
+     'eza'
+     'fastfetch'
+     'fd'
+     'ffmpeg'
+     'fnm'
+     'fzf'
+     'gh'
+     'go'
+     'JetBrainsMono-NF'
+     'jq'
+     'lazygit'
+     'less'
+     'mingw'
+     'neovim'
+     'poppler'
+     'pnpm'
+     'ripgrep'
+     'resvg'
+     'sqlite'
+     'starship'
+     'vcredist2022'
+     'yazi'
+     'zig'
+     'zoxide'
+     'imagemagick'
+ )
 
 $wingetPackages = @(
     'Microsoft.PowerShell'
@@ -168,6 +174,13 @@ foreach ($pkg in $wingetPackages) { Install-WingetPackage $pkg }
 
 Refresh-Path
 
+# Yazi requires file(1) for MIME detection on Windows.
+$yaziFileOne = "$env:USERPROFILE\scoop\apps\git\current\usr\bin\file.exe"
+if (Test-Path -LiteralPath $yaziFileOne) {
+    [Environment]::SetEnvironmentVariable('YAZI_FILE_ONE', $yaziFileOne, 'User')
+    $env:YAZI_FILE_ONE = $yaziFileOne
+}
+
 # ---------------------------------------------------------------------------
 # 3. Config links
 # ---------------------------------------------------------------------------
@@ -180,6 +193,7 @@ $links = @(
     @{ Link = "$env:LOCALAPPDATA\lazygit";              Target = 'lazygit' }
     @{ Link = "$env:USERPROFILE\.config\starship.toml"; Target = 'starship\starship.toml' }
     @{ Link = "$env:USERPROFILE\.config\fastfetch";     Target = 'fastfetch' }
+    @{ Link = "$env:APPDATA\yazi\config";               Target = 'yazi' }
     @{ Link = "$env:USERPROFILE\Documents\PowerShell";  Target = 'windows\PowerShell' }
 )
 

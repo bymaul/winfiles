@@ -5,9 +5,9 @@ Windows and WSL dotfiles.
 ## Layout
 
 ```
-nvim/ starship/ bat/ lazygit/ fastfetch/    # cross-platform (root)
-wsl/zsh/ wsl/tmux/ wsl/opencode/            # WSL-only
-windows/                                   # native Windows (PowerShell, Windows Terminal)
+nvim/ starship/ bat/ lazygit/ fastfetch/ yazi/  # cross-platform (root)
+wsl/zsh/ wsl/tmux/ wsl/opencode/                # WSL-only
+windows/                                        # native Windows (PowerShell, Windows Terminal)
 install.ps1  install-wsl.sh
 ```
 
@@ -55,7 +55,7 @@ chsh -s /usr/bin/zsh   # once: make zsh the default shell
 
 ## Requirements
 
-- WSL: `zsh`, `tmux`, `nvim`, `starship`, `bat`, `lazygit`, `fastfetch`. `opencode`
+- WSL: `zsh`, `tmux`, `nvim`, `starship`, `bat`, `lazygit`, `fastfetch`, `opencode`, `yazi`
   is installed automatically by `install-wsl.sh`.
 - On Windows, nvim needs a C toolchain for treesitter parsers - see
   `nvim/README.md`.

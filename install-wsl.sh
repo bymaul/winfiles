@@ -26,11 +26,11 @@ packages=(
     eza
     fastfetch
     fd
-    fnm
     fzf
     git
     lazygit
     less
+    mise
     neovim
     openssh
     ripgrep
@@ -92,6 +92,9 @@ link "$REPO/wsl/opencode" . "$HOME/.config/opencode"
 link "$REPO/starship" starship.toml "$HOME/.config/starship.toml"
 link "$REPO/fastfetch" . "$HOME/.config/fastfetch"
 link "$REPO/yazi" . "$HOME/.config/yazi"
+link "$REPO/mise" . "$HOME/.config/mise"
+
+mise install
 
 # migrate: ~/.tmux.conf moved to ~/.config/tmux
 old_conf="$(readlink -f "$HOME/.tmux.conf" 2>/dev/null || true)"
@@ -126,6 +129,8 @@ elif ! command -v opencode >/dev/null 2>&1; then
     mkdir -p "$HOME/.local/bin"
     ln -sfn "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode"
 fi
+
+sed -i "\|^export PATH=$HOME/\.opencode/bin:\$PATH$|d" "$HOME/.zshenv"
 
 # check requirements
 missing=0

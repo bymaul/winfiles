@@ -117,40 +117,38 @@ $scoopBuckets = @(
 )
 
  $scoopPackages = @(
-     '7zip'
-     'bat'
-     'eza'
-     'fastfetch'
-     'fd'
-     'ffmpeg'
-     'fnm'
-     'fzf'
-     'gh'
-     'go'
-     'JetBrainsMono-NF'
-     'jq'
-     'lazygit'
-     'less'
-     'mingw'
-     'neovim'
-     'poppler'
-     'pnpm'
-     'ripgrep'
-     'resvg'
-     'sqlite'
-     'starship'
-     'vcredist2022'
-     'yazi'
-     'zig'
-     'zoxide'
-     'imagemagick'
+    '7zip'
+    'bat'
+    'eza'
+    'fastfetch'
+    'fd'
+    'ffmpeg'
+    'fzf'
+    'gh'
+    'imagemagick'
+    'JetBrainsMono-NF'
+    'jq'
+    'lazygit'
+    'less'
+    'mingw'
+    'mise'
+    'neovim'
+    'poppler'
+    'resvg'
+    'ripgrep'
+    'sqlite'
+    'starship'
+    'vcredist2022'
+    'yazi'
+    'zig'
+    'zoxide'
  )
 
 $wingetPackages = @(
     'Microsoft.PowerShell'
-    'Microsoft.WindowsTerminal'
     'Microsoft.PowerToys'
     'Microsoft.WSL'
+    'Microsoft.WindowsTerminal'
     'ZedIndustries.Zed'
 )
 
@@ -188,13 +186,14 @@ if (Test-Path -LiteralPath $yaziFileOne) {
 Write-Host ''
 
 $links = @(
-    @{ Link = "$env:LOCALAPPDATA\nvim";                 Target = 'nvim' }
-    @{ Link = "$env:APPDATA\bat";                       Target = 'bat' }
-    @{ Link = "$env:LOCALAPPDATA\lazygit";              Target = 'lazygit' }
-    @{ Link = "$env:USERPROFILE\.config\starship.toml"; Target = 'starship\starship.toml' }
-    @{ Link = "$env:USERPROFILE\.config\fastfetch";     Target = 'fastfetch' }
-    @{ Link = "$env:APPDATA\yazi\config";               Target = 'yazi' }
-    @{ Link = "$env:USERPROFILE\Documents\PowerShell";  Target = 'windows\PowerShell' }
+    @{ Link = "$env:APPDATA\bat";                           Target = 'bat' }
+    @{ Link = "$env:USERPROFILE\.config\fastfetch";         Target = 'fastfetch' }
+    @{ Link = "$env:LOCALAPPDATA\lazygit";                  Target = 'lazygit' }
+    @{ Link = "$env:USERPROFILE\.config\mise\config.toml";  Target = 'mise\config.toml' }
+    @{ Link = "$env:LOCALAPPDATA\nvim";                     Target = 'nvim' }
+    @{ Link = "$env:USERPROFILE\.config\starship.toml";     Target = 'starship\starship.toml' }
+    @{ Link = "$env:USERPROFILE\Documents\PowerShell";      Target = 'windows\PowerShell' }
+    @{ Link = "$env:APPDATA\yazi\config";                   Target = 'yazi' }
 )
 
 foreach ($l in $links) { New-ConfigLink @l }
@@ -211,6 +210,8 @@ foreach ($wt in $wtPaths) {
         break
     }
 }
+
+mise install
 
 # ---------------------------------------------------------------------------
 # 4. Post-install

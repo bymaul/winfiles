@@ -5,7 +5,7 @@ Enable-TransientPrompt
 
 Invoke-Expression (& zoxide init powershell | Out-String)
 
-fnm env --use-on-cd --shell powershell | Out-String | Invoke-Expression
+(&mise activate pwsh) | Out-String | Invoke-Expression
 
 if (Get-Module -ListAvailable Microsoft.WinGet.CommandNotFound) {
     Import-Module -Name Microsoft.WinGet.CommandNotFound

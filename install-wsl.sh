@@ -6,12 +6,28 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 
+NOBACKUP=0
+for arg in "$@"; do
+    case "$arg" in
+        --no-backup) NOBACKUP=1 ;;
+        -h|--help)
+            echo "Usage: $0 [--no-backup]"
+            echo "  --no-backup  Replace existing configs without creating .bak.* backups"
+            exit 0
+            ;;
+    esac
+done
+
 link() {
     local src="$(readlink -f "$1/$2")" tgt="$3"
     [ -L "$tgt" ] && [ "$(readlink -f "$tgt")" = "$src" ] && return 0
     mkdir -p "$(dirname "$tgt")"
     if [ -e "$tgt" ] || [ -L "$tgt" ]; then
-        mv "$tgt" "$tgt.bak.$(date +%s)"
+        if [ "$NOBACKUP" -eq 1 ]; then
+            rm -rf "$tgt"
+        else
+            mv "$tgt" "$tgt.bak.$(date +%s)"
+        fi
     fi
     ln -s "$src" "$tgt"
 }

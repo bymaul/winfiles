@@ -46,6 +46,12 @@ cd winfiles
 ./install-wsl.sh
 ```
 
+Existing configs are backed up as `<name>.bak.<timestamp>`. Pass `--no-backup` to replace them instead:
+
+```sh
+./install-wsl.sh --no-backup
+```
+
 Then:
 
 ```sh

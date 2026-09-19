@@ -156,9 +156,8 @@ $wingetPackages = @(
 Install-ScoopPackage 'git'
 
 foreach ($bucket in $scoopBuckets) {
-    $installed = @(scoop bucket list 2>$null | ForEach-Object { if ($_.name) { $_.name } else { $_ } })
-
-    if ($installed -contains $bucket) {
+    $bucketList = scoop bucket list 2>$null | Out-String
+    if ($bucketList -match "(?m)^\s*$([regex]::Escape($bucket))\b") {
         Write-Host "  scoop bucket/$bucket (installed)"
     } else {
         Write-Host "  scoop bucket/$bucket"

@@ -109,6 +109,7 @@ link "$REPO/starship" starship.toml "$HOME/.config/starship.toml"
 link "$REPO/fastfetch" . "$HOME/.config/fastfetch"
 link "$REPO/yazi" . "$HOME/.config/yazi"
 link "$REPO/mise" . "$HOME/.config/mise"
+link "$REPO" .gitconfig "$HOME/.gitconfig"
 
 mise install
 

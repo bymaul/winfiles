@@ -191,6 +191,7 @@ $links = @(
     @{ Link = "$env:USERPROFILE\.config\mise\config.toml";  Target = 'mise\config.toml' }
     @{ Link = "$env:LOCALAPPDATA\nvim";                     Target = 'nvim' }
     @{ Link = "$env:USERPROFILE\.config\starship.toml";     Target = 'starship\starship.toml' }
+    @{ Link = "$env:USERPROFILE\.gitconfig";                  Target = '.gitconfig' }
     @{ Link = "$env:USERPROFILE\Documents\PowerShell";      Target = 'windows\PowerShell' }
     @{ Link = "$env:APPDATA\yazi\config";                   Target = 'yazi' }
 )

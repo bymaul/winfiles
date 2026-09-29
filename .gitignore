@@ -23,6 +23,3 @@ lazygit/github_pull_requests.json
 
 # tmux plugin clones (managed by tpm / install-wsl.sh)
 wsl/tmux/plugins/
-
-# symlink to ../agents/AGENTS.md, created by install-wsl.sh
-wsl/opencode/AGENTS.md

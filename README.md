@@ -6,7 +6,7 @@ Windows and WSL dotfiles.
 
 ```
 nvim/ starship/ bat/ lazygit/ fastfetch/ yazi/  # cross-platform (root)
-wsl/zsh/ wsl/tmux/ wsl/opencode/                # WSL-only
+wsl/zsh/ wsl/tmux/                              # WSL-only
 windows/                                        # native Windows (PowerShell, Windows Terminal)
 install.ps1  install-wsl.sh
 ```

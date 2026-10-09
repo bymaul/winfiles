@@ -159,6 +159,15 @@ for bin in zsh tmux nvim starship bat lazygit opencode fastfetch paru win32yank.
 done
 [ "$missing" -eq 0 ] || echo '  some requirements missing - see README.md'
 
+# Prompt to personalize ~/.gitconfig (name/email/signing key).
+if [ -t 0 ]; then
+    printf '\nEdit ~/.gitconfig now? [y/N] '
+    read -r reply </dev/tty || reply=''
+    case "$reply" in
+        [Yy]*) "${EDITOR:-nvim}" "$HOME/.gitconfig" ;;
+    esac
+fi
+
 echo ''
 echo 'Done.'
 echo ''

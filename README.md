@@ -61,7 +61,7 @@ chsh -s /usr/bin/zsh   # once: make zsh the default shell
 
 ## Requirements
 
-- WSL: `zsh`, `tmux`, `nvim`, `starship`, `bat`, `lazygit`, `fastfetch`, `opencode`, `yazi`
+- WSL: `zsh`, `tmux`, `nvim`, `starship`, `bat`, `lazygit`, `fastfetch`, `yazi`
   is installed automatically by `install-wsl.sh`.
 - On Windows, nvim needs a C toolchain for treesitter parsers - see
   `nvim/README.md`.

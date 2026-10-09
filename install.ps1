@@ -268,6 +268,15 @@ if ($Repo -match '^([A-Za-z]):\\(.*)$') {
     $wslRepo = "/mnt/$($matches[1].ToLowerInvariant())/$($matches[2] -replace '\\','/')"
 }
 
+# Prompt to personalize ~/.gitconfig (name/email/signing key).
+if ([Environment]::UserInteractive -and -not [Console]::IsInputRedirected) {
+    $answer = Read-Host "`nEdit ~/.gitconfig now? [y/N]"
+    if ($answer -match '^[Yy]') {
+        $editor = if ($env:EDITOR) { $env:EDITOR } elseif (Test-Command 'nvim') { 'nvim' } else { 'notepad' }
+        & $editor "$env:USERPROFILE\.gitconfig"
+    }
+}
+
 Write-Host ''
 Write-Host 'Done.'
 Write-Host ''

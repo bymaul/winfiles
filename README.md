@@ -2,15 +2,6 @@
 
 Windows and WSL dotfiles.
 
-## Layout
-
-```
-nvim/ starship/ bat/ lazygit/ fastfetch/ yazi/  # cross-platform (root)
-wsl/zsh/ wsl/tmux/                              # WSL-only
-windows/                                        # native Windows (PowerShell, Windows Terminal)
-install.ps1  install-wsl.sh
-```
-
 ## Windows
 
 Fresh machine, elevated PowerShell 7:
@@ -18,27 +9,21 @@ Fresh machine, elevated PowerShell 7:
 ```powershell
 git clone https://github.com/bymaul/winfiles
 cd winfiles
-.\install.ps1    # links configs (junctions), installs the toolchain (scoop + winget), sets up WSL + Arch
+.\install.ps1    # links configs, installs the toolchain (scoop + winget), sets up WSL + Arch
 ```
 
-Existing config files/directories are backed up next to their location
-(`<name>.bak.<timestamp>`). Pass `-NoBackup` to replace them instead:
-
-```powershell
-.\install.ps1 -NoBackup
-```
-
-Re-run `.\install.ps1` after every `git pull` to re-link and update.
+Re-run after every `git pull`. Existing configs are backed up as
+`<name>.bak.<timestamp>`; pass `-NoBackup` to replace them instead.
 
 ## WSL
 
-Same machine as the Windows clone? No second clone - run the mounted copy:
+From the Windows clone (no second clone needed):
 
 ```sh
 /mnt/c/Users/$USER/winfiles/install-wsl.sh
 ```
 
-WSL-only machine? Clone once:
+Standalone:
 
 ```sh
 git clone https://github.com/bymaul/winfiles
@@ -46,13 +31,8 @@ cd winfiles
 ./install-wsl.sh
 ```
 
-Existing configs are backed up as `<name>.bak.<timestamp>`. Pass `--no-backup` to replace them instead:
-
-```sh
-./install-wsl.sh --no-backup
-```
-
-Then:
+Same backup behavior as Windows (`--no-backup` to replace instead).
+Re-run after every `git pull`. Then:
 
 ```sh
 exec zsh
@@ -61,7 +41,6 @@ chsh -s /usr/bin/zsh   # once: make zsh the default shell
 
 ## Requirements
 
-- WSL: `zsh`, `tmux`, `nvim`, `starship`, `bat`, `lazygit`, `fastfetch`, `yazi`
-  is installed automatically by `install-wsl.sh`.
-- On Windows, nvim needs a C toolchain for treesitter parsers - see
-  `nvim/README.md`.
+`install-wsl.sh` installs its dependencies automatically.
+On Windows, nvim needs a C toolchain for treesitter parsers - see
+`nvim/README.md`.

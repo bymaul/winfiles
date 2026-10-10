@@ -20,3 +20,6 @@ windows/PowerShell/Scripts/
 # lazygit
 lazygit/state.yml
 lazygit/github_pull_requests.json
+
+# zsh
+wsl/zsh/.config/zsh/.zcompdump

@@ -122,20 +122,6 @@ case "$old_conf" in
     "$REPO"/*) rm "$HOME/.tmux.conf" ;;
 esac
 
-# tpm + tmux plugins: with a config at ~/.config/tmux, TPM keeps plugins
-# there too. Clone anything declared as "@plugin 'owner/repo'".
-plugins_dir="$HOME/.config/tmux/plugins"
-if [ ! -d "$plugins_dir/tpm" ]; then
-    echo '  installing tpm'
-    git clone -q https://github.com/tmux-plugins/tpm "$plugins_dir/tpm"
-fi
-conf="$HOME/.config/tmux/tmux.conf"
-[ -f "$conf" ] && while IFS= read -r repo; do
-    name="${repo##*/}"
-    [ -d "$plugins_dir/$name" ] || \
-        git clone -q "https://github.com/$repo" "$plugins_dir/$name"
-done < <(sed -n "s/^set -g @plugin '\([^']*\)'.*/\1/p" "$conf")
-
 # bat cache
 command -v bat >/dev/null 2>&1 && bat cache --build >/dev/null 2>&1
 
